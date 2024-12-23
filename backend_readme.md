@@ -489,9 +489,10 @@
     export default resolvers;
 ###
 
-19. now we import resolver to index.js and us using appolloserver
+19. now we import resolver to index.js and us using apollo server
 
 19. 1. 
+
 ###
     import { ApolloServer } from "@apollo/server";
     import {expressMiddleware} from '@apollo/server/express4'
@@ -517,4 +518,124 @@
     )
 ###
 
+## 22. Run the server
+
+###
+npm start
+###
+
+## 21. access apollo server on browser
+
+###
+http://localhost:4000/graphql
+###
+
+
+## 22. Run add author mutation 
+###
+    mutation addAuthor ($addAuthorAuthor: AddAuthorInput!){
+    addAuthor(author: $addAuthorAuthor) {
+        name
+        id
+    }
+    }
+###
+
+## pass variable data to add
+
+###
+    {
+        "addAuthorAuthor": {
+            "name":"JEET",
+            "verified":false   
+        }
+    }
+###
+
+##  23. fetch all authors
+###
+    query fetchAuthors {
+    authors{
+        id
+        name
+        verified
+    }
+    }
+###
+
+## 24. fetch nested author with reviews
+###
+    query {
+    authors {
+        name
+        reviews {
+        content
+        rating
+        }
+    }
+    }
+###
+
+## 25. fetch author by Id
+
+###
+
+    query fetchAuthorById($authorId: ID!){
+    author(id: $authorId) {
+        name
+        verified
+    }
+    }
+###
+
+## variable pass in body
+
+###
+    {
+        "authorId": "67691b8afe74cb2a6b4a3e26",
+    }
+###
+## 26. update author mutation
+
+###
+
+    mutation updateAuthor($updateAuthorId: ID!, $edits: EditAuthorInput!) {
+    updateAuthor(id: $updateAuthorId, edits: $edits) {
+        name
+        verified
+    }
+    }
+###
+
+## variable data for update
+
+###
+    {
+        "updateAuthorId": "67691b1dfe74cb2a6b4a3e22",
+        "edits": {
+            "name": "MEETA SINGH",
+            "verified": true
+        },
+    }
+###
+
+## 27. delete Author mutation
+
+###
+
+    mutation deleteAuthor($deleteAuthorId: ID!) {
+    deleteAuthor(id: $deleteAuthorId) {
+        name
+    }
+    }
+
+###
+
+## variable data for update
+
+###
+    {
+        "deleteAuthorId": "67691b8afe74cb2a6b4a3e26"
+    }
+###
 
