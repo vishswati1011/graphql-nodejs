@@ -1,85 +1,59 @@
+
+import dbConnection  from './dbSetup.js'
+import dotenv from 'dotenv'
+import express from 'express'
+import cors from 'cors'
+import bodyParser from "body-parser";
+import {readFileSync} from 'fs'
+import gql from 'graphql-tag';
 import { ApolloServer } from "@apollo/server";
-import { startStandaloneServer } from "@apollo/server/standalone";
+import {expressMiddleware} from '@apollo/server/express4'
+import { mergeTypeDefs } from '@graphql-tools/merge';
+import resolvers from "./graphQL/resolver/resolvers.js";
 
-// static db
-import db from './_db.js'
-//type
-import { typeDefs } from "./schema.js";
 
-//resolver
-const resolvers = {
-    Query:{
-       games(){
-        return db.games
-       },
-       game(_,args){
-        return db.games.find((game)=>game.id === args.id)
-       },
-       authors() {
-        return db.authors
-       },
-       author(_,args){
-        return db.authors.find((author)=>author.id === args.id)
-       }, 
-       reviews() {
-        return db.reviews
-       },
-       review(_,args) {
-        return db.reviews.find((review)=>review.id === args.id)
-       },
-    },
-    Game: {
-        reviews(parent) {
-            return db.reviews.filter((r) => r.game_id === parent.id)
-        }
-    },
-    Authors: {
-        reviews(parent) {
-            return db.reviews.filter((r) => r.author_id === parent.id)
-        }
-    },
-    Reviews: {
-        author(parent) {
-            return db.authors.find((a) => a.id === parent.author_id)
-        },
-        game(parent) {
-            return db.games.find((g) => g.id === parent.game_id)
-        }
-    },
-    Mutation: {
-        deleteGame(_,args){
-            db.games = db.games.filter((g)=> g.id != args.id)
-            return db.games
-        },
-        addGame(_,args){
-            let game = {
-                ...args.game,
-                id:Math.floor(Math.random()*1000).toString()
-            }
-            db.games.push(game)
-            return game
-        },
-        updateGame(_, args){
-            db.games = db.games.map((g)=>{
-                if(g.id === args.id){
-                    return {...g,...args.edits}
-                }
-                return g
-            })
-            return db.games.find((g)=>g.id === args.id)
-        }
-    }
+const PORT = process.env.PORT || 4000
+const app = express();
 
-}
+app.use(cors({ credentials: true, origin: '*' }));
+app.use(bodyParser.json());
+app.use(
+    bodyParser.urlencoded({
+        extended: true,
+    })
+);
+
+dotenv.config();
+
+// mongodb 
+dbConnection().then(conn =>{
+    console.log("Mongo connect")
+})
+
+const typeDefsArray = [
+    gql(readFileSync("./graphQL/Schema/game.graphql", { encoding: "utf-8" })),
+    gql(readFileSync("./graphQL/Schema/review.graphql", { encoding: "utf-8" })),
+    gql(readFileSync("./graphQL/Schema/author.graphql", { encoding: "utf-8" })),
+];
+  
+const typeDefs = mergeTypeDefs(typeDefsArray);
 
 const server = new ApolloServer({
     typeDefs,  // --definitions and type of data
     resolvers
 })
 
-const {url} = await startStandaloneServer(server,{
-    listen: {port: 4000}
+await server.start();
+
+app.get('/',(req,res)=>{
+    res.send("Server running on PORT : 4000")
 })
+app.use('/graphql',
+    cors(),
+    express.json(),
+    expressMiddleware(server)
+)
 
-console.log('Server ready at port',4000)
-
+app.listen(PORT,()=>{
+    console.log(`Server is running on port: ${PORT}`)
+})

@@ -1,0 +1,23 @@
+    type Authors {
+        id: ID!
+        name: String!
+        verified: String!
+        reviews: [Reviews!]
+    }
+    type Query{
+        authors: [Authors]
+        author(id: ID!): Authors
+    }
+    type Mutation {
+        addAuthor(author:AddAuthorInput!):Authors,
+        deleteAuthor(id:ID!) : [Authors]
+        updateAuthor(id:ID!,edits:EditAuthorInput!):Authors
+    }
+    input AddAuthorInput {
+        name: String!,
+        verified: Boolean
+    }
+    input EditAuthorInput {
+        name: String,
+        verified: Boolean
+    }

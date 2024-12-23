@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 const dbConnection = async () =>{
     try{
         console.log("process.env.MONGO_URL",process.env.MONGO_URL)
-        const con = await mongoose.connect(process.env.MONGO_URL,{ useNewUrlParser: true, useUnifiedTopology: true })
+        const con = await mongoose.connect(process.env.MONGO_URL)
         const dbName = con.connection.db.databaseName;
         console.log("Connected MongoDB : "+ dbName)
         return con;
