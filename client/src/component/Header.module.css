@@ -1,0 +1,25 @@
+
+.header {
+    display: flex;
+    background-color: black;
+    color:aliceblue;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.title:hover{
+    color: rgb(247, 154, 40);
+}
+.list_menu{
+    list-style: none;
+    display: flex;
+}
+
+.list_style{
+    text-decoration: none;
+    margin-left: 10px;
+    color: white;
+}
+.list_style:hover{
+    color: rgb(247, 154, 40);
+}

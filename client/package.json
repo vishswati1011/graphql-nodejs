@@ -3,9 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@apollo/client": "^3.12.4",
+    "apollo-client": "^2.6.10",
+    "axios": "^1.7.9",
     "cra-template": "1.2.0",
+    "graphql": "^15.9.0",
+    "graphql-tag": "^2.12.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-query": "^3.39.3",
+    "react-router-dom": "^7.1.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^4.2.4"
   },

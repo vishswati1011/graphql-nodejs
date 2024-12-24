@@ -3,12 +3,21 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { ApolloProvider} from "@apollo/client";
+import client from './graphQL/apolloClient'
+import {BrowserRouter as Router } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from 'react-query';
 
+const queryClient = new QueryClient();
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  <ApolloProvider client={client}>
+    <QueryClientProvider client={queryClient}> 
+    <Router>
     <App />
-  </React.StrictMode>
+    </Router>
+    </QueryClientProvider>
+  </ApolloProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function
