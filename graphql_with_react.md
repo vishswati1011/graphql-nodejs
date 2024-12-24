@@ -39,7 +39,7 @@
 8. now create Header.js file
 ## Header.js
 ###
-   import React from "react";
+    import React from "react";
     import styles from "./Header.module.css";
     import { Link } from "react-router-dom";
     function Header() {
@@ -94,8 +94,8 @@
     9.3 Header.js
 
 ## Author.js
-###
 
+###
     import React from "react";
 
     function Authors() {
@@ -111,6 +111,7 @@
 ###
 
 ## Game.js
+
 ###
 
     import React from "react";
@@ -148,6 +149,7 @@
 
 11. now we add above page routes in App.js
 
+###
     import "./App.css";
     import Authors from "./component/Authors";
     import Game from './component/Games'
@@ -169,7 +171,7 @@
     }
 
     export default App;
-
+###
 
 12. check nagivation on browser
 
@@ -222,7 +224,23 @@
     import client from "../graphQL/apolloClient"; // Import your client
 ###
 
-## 13. 7. useQuery to graphql api calls in Author.js
+## 13. 7. GraphQL/AuthorTag.js
+
+###
+    import {gql} from '@apollo/client';
+
+    export const GET_AUTHORS = gql`
+    query {
+        authors{
+            id
+            name
+            verified
+        }
+        }
+    `;
+
+###
+## 13. 8. useQuery to graphql api calls in Author.js
 
 ###
     const { loading, error, data } = useQuery(GET_AUTHORS, { client });
@@ -231,7 +249,9 @@
     if (error) return <p>Error: {error.message}</p>;
 ###
 
-## 13. 8. Author.js file look like 
+
+
+## 13. 9. Author.js file look like 
 ###
     import React from "react";
     import { useQuery } from "@apollo/client";
@@ -272,7 +292,7 @@
 
 ###
 
-## 14. now how to use react-query to make api calls
+## 14. How to use react-query to make api calls
 
 ## 14. 1. first install react-query
 
