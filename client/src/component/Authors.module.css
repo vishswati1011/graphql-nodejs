@@ -1,5 +1,24 @@
 
-table {
+  .main{
+    display: flex;
+    justify-content: space-around;
+  }
+  .add_form{
+    display: grid;
+    width: 250px;
+    text-align: left;
+    height: 200px;
+  }
+  .add_form input {
+    height:30px
+  }
+  .add_form button {
+    height:30px
+  } 
+  .add_form select {
+    height: 30px;
+  }
+  table {
     width: 50%;
     border-collapse: collapse;
   }

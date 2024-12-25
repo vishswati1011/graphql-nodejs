@@ -471,3 +471,176 @@
     export default Review;
 
 ###
+
+# how to use mutation with GraphQl
+
+## 16.1 add Author with useMutation of apollo/client how to use
+
+###
+    export const ADD_AUTHOR = gql`
+    mutation 
+        addAuthor ($addAuthorInput: AddAuthorInput!) {
+        addAuthor (author: $addAuthorInput) {
+            name
+            id
+        }
+        }
+    `;
+    export const DELETE_AUTHOR = gql`
+    mutation
+        deleteAuthor ($deleteAuthorId: ID!){
+        deleteAuthor (id: $deleteAuthorId) {
+            name
+        }
+        }
+    `;
+###
+
+## 16.2 import mutation and tags
+
+###
+    import { useQuery, useMutation } from "@apollo/client";
+    import { GET_AUTHORS, ADD_AUTHOR ,DELETE_AUTHOR} from "../graphQL/authorTags"; // Import your GraphQL query
+###
+
+## 16.3 use useMutaion
+
+###
+    const [addAuthors, { authorData }] = useMutation(ADD_AUTHOR);
+    const [deleteAuthor] = useMutation(DELETE_AUTHOR)
+###
+
+## 16.4 
+
+###
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const { data } = await addAuthors({
+            variables: {
+                addAuthorInput: {
+                name: inputValue.name,
+                verified: Boolean(inputValue.verified),
+                },
+            },
+        });
+    };
+    const handleDelete = async (authorId) => {
+
+        const deleteData = await deleteAuthor({
+            variables: {
+                deleteAuthorId:authorId
+            }
+        })
+    }
+###
+
+
+## 17. useMutation with axios to addGame 
+
+17. 1. first we add ADD_GAME and DELETE_GAME tag
+
+###
+    export const ADD_GAME = gql`
+        mutation
+        addGameMutation ($addGameInput: AddGameInput!){
+            addGame(game: $addGameInput) {
+            title
+            platform  
+            }
+        }
+    `;
+
+    export const DELETE_GAME = `
+        mutation deleteGame($deleteGameId: ID!) {
+            deleteGame(id: $deleteGameId) {
+            title
+            }
+    }
+    `;
+###
+
+17. 3.  now we make api calls with axios
+
+17. 4. we tried 2 ways to add game first with react-query with useMutation using customHook
+
+    for this we also need  request from graphql-request pkg we can also use axios
+ 
+### 
+    import {request} from 'graphql-request';
+###
+
+## we created hook outside of Game component
+
+###
+    const useCreateAddGameMutation =  () => {
+    return useMutation(
+        async (variables) => {
+        const response = await request('http://localhost:4000/graphql', ADD_GAME, {addGameInput:variables});
+        return response;
+        },
+        {
+        onSuccess: (data) => {
+            // Handle success, e.g., update cache, show success message
+            console.log('Post created successfully:', data); 
+            return data;
+        },
+        onError: (error) => {
+            // Handle errors, e.g., display error message to user
+            console.error('Error creating post:', error);
+        },
+        }
+    );
+    };
+
+###
+
+## now we use hook for api calls
+
+
+###
+     const createGameMutation = useCreateAddGameMutation();
+###
+
+###
+    const handleAddGame = async() => {
+    // const result = await createGameMutation.mutate({ title: inputValue.title, platform: inputValue.platform });
+    // console.log(result,"result")
+###
+
+17. 5. without using any custom hook you can simply use axios for ADD_GAME Mutation graphql api calls
+
+###
+    const handleAddGame = async() => {
+        try {
+        const response = await axios.post('http://localhost:4000/graphql',
+            {
+            query: ADD_GAME,
+            variables: {
+                addGameInput:{ title: inputValue.title, platform: inputValue.platform }
+            }
+            }
+        )
+        console.log(response,"game added")
+        } catch (err) {
+        console.error("Error deleting game:", err);
+        }
+    };
+###
+
+###
+    const handleDelete = async (gameId) => {
+    try {
+      const response = await axios.post('http://localhost:4000/graphql',
+        {
+          query: DELETE_GAME,
+          variables: {
+            deleteGameId:gameId
+          }
+        }
+      )
+      console.log(response,"game deleted")
+    } catch (err) {
+      console.error("Error deleting game:", err);
+    }
+  };
+###

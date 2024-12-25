@@ -9,3 +9,22 @@ export const GET_AUTHORS = gql`
     }
     }
 `;
+
+export const ADD_AUTHOR = gql`
+  mutation 
+    addAuthorMutation ($addAuthorInput: AddAuthorInput!) {
+      addAuthor (author: $addAuthorInput) {
+        name
+        id
+      }
+    }
+`;
+
+export const DELETE_AUTHOR = gql`
+  mutation
+    deleteAuthorMutation ($deleteAuthorId: ID!){
+      deleteAuthor (id: $deleteAuthorId) {
+        name
+      }
+    }
+`;
