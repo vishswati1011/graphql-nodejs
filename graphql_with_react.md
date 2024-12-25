@@ -629,18 +629,18 @@
 
 ###
     const handleDelete = async (gameId) => {
-    try {
-      const response = await axios.post('http://localhost:4000/graphql',
-        {
-          query: DELETE_GAME,
-          variables: {
-            deleteGameId:gameId
-          }
+        try {
+        const response = await axios.post('http://localhost:4000/graphql',
+            {
+            query: DELETE_GAME,
+            variables: {
+                deleteGameId:gameId
+            }
+            }
+        )
+        console.log(response,"game deleted")
+        } catch (err) {
+        console.error("Error deleting game:", err);
         }
-      )
-      console.log(response,"game deleted")
-    } catch (err) {
-      console.error("Error deleting game:", err);
-    }
-  };
+    };
 ###
