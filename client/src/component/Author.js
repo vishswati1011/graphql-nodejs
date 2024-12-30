@@ -82,7 +82,8 @@ function Authors() {
                 <tr key={author.id} className={styles.table_row}>
                   <td className={styles.table_row}>{author.name}</td>
                   <td className={styles.table_row}>{author.verified}</td>
-                  <td><button onClick={()=>handleDelete(author.id)}>Delete</button></td>
+                  <td><button className={styles.delete_btn}
+                  onClick={()=>handleDelete(author.id)}>Delete</button></td>
                 </tr>
               ))}
             </tbody>

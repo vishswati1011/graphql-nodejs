@@ -7,7 +7,8 @@
     display: grid;
     width: 250px;
     text-align: left;
-    height: 200px;
+    height: 300px;
+    gap:10
   }
   .add_form input {
     height:30px
@@ -17,6 +18,12 @@
   } 
   .add_form select {
     height: 30px;
+  }
+  .delete_btn { 
+    background-color: rgb(229, 68, 68);
+    border: none;
+    color: white;
+    border-radius: 5px;
   }
   table {
     width: 50%;

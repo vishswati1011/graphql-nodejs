@@ -1,6 +1,6 @@
 import {gql} from 'graphql-request';
 
-export const GET_GAMES = `
+export const GET_GAMES = gql`
   query {
     games{
         id
@@ -10,12 +10,13 @@ export const GET_GAMES = `
     }
 `;
 
-export const ADD_GAME = gql`
+export const ADD_GAME = `
     mutation
       addGameMutation ($addGameInput: AddGameInput!){
         addGame(game: $addGameInput) {
           title
           platform  
+          id
         }
       }
 `;

@@ -603,8 +603,9 @@
 
 ###
     const handleAddGame = async() => {
-    // const result = await createGameMutation.mutate({ title: inputValue.title, platform: inputValue.platform });
-    // console.log(result,"result")
+       const result = await createGameMutation.mutate({ title: inputValue.title, platform: inputValue.platform });
+       console.log(result,"result")
+    }
 ###
 
 17. 5. without using any custom hook you can simply use axios for ADD_GAME Mutation graphql api calls

@@ -1,67 +1,50 @@
-import React,{useState} from "react";
+import React,{useEffect, useState} from "react";
 import { useMutation, useQuery } from "react-query";
 import { GET_GAMES,ADD_GAME,DELETE_GAME } from "../graphQL/gameTags"; // Import your GraphQL query
 import styles from './Authors.module.css';
 import axios from 'axios';
-import {request} from 'graphql-request';
 
 
-const useCreateAddGameMutation =  () => {
-  return useMutation(
-    async (variables) => {
-      const response = await request('http://localhost:4000/graphql', ADD_GAME, {addGameInput:variables});
-      return response;
-    },
-    {
-      onSuccess: (data) => {
-        // Handle success, e.g., update cache, show success message
-        console.log('Post created successfully:', data); 
-        return data;
-      },
-      onError: (error) => {
-        // Handle errors, e.g., display error message to user
-        console.error('Error creating post:', error);
-      },
-    }
-  );
-};
+const fetchGames = async () => {
+  const response = await axios.post("http://localhost:4000/graphql", {
+    query: GET_GAMES
+  })
+  return response.data?.data?.games;
+}
+
 
 function Game() {
-
-  const createGameMutation = useCreateAddGameMutation();
-  // const [deleteGameMutation] = useMutation(DELETE_GAME);
-
   const [inputValue, setInputValue] = useState({
     title: "",
     platform: "",
   });
 
-  const { data, loading, error } = useQuery("launches", () => {
-    return axios({
-      url: 'http://localhost:4000/graphql',
-      method: "POST",
-      data: {
-        query: GET_GAMES
-      }
-    }).then(response => response?.data?.data?.games);
-  });
+  const { data :games, isLoading, error } = useQuery("gameData",fetchGames);
 
-  const handleAddGame = async() => {
-    // const result = await createGameMutation.mutate({ title: inputValue.title, platform: inputValue.platform });
-    // console.log(result,"result")
-    try {
-      const response = await axios.post('http://localhost:4000/graphql',
-        {
-          query: ADD_GAME,
-          variables: {
-            addGameInput:{ title: inputValue.title, platform: inputValue.platform }
-          }
+  // console.log(games,"game data")
+  const [gameData,setGameData] = useState([])
+  const addGameMutation = useMutation (async (addGameInput) => {
+    const response =  await axios.post('http://localhost:4000/graphql',
+      {
+        query: ADD_GAME,
+        variables: {
+          addGameInput
         }
-      )
-      console.log(response,"game added")
-    } catch (err) {
-      console.error("Error deleting game:", err);
-    }
+      }
+    );
+    setGameData([...gameData,response.data.data.addGame])
+    return response;
+
+  })
+
+  useEffect(()=>{
+    setTimeout(()=>{
+      setGameData(games)
+    },2000)
+  },[])
+  const handleAddGame = async() => {
+    await addGameMutation.mutate({ title: inputValue.title, platform: inputValue.platform });
+  
   };
 
   const handleDelete = async (gameId) => {
@@ -84,7 +67,7 @@ function Game() {
     setInputValue({ ...inputValue, platform: event.target.value });
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
   
 
@@ -114,9 +97,10 @@ function Game() {
               Android
             </option>
           </select>
-          <button onClick={(e) => handleAddGame(e)}>Add </button>
+          <button onClick={(e) => handleAddGame(e)}>{addGameMutation.isLoading?  "Submitting..." : "Add" } </button>
+          {addGameMutation.isError && <p style={{color:"red"}}> Error in add Game </p> }
         </div>
-        {loading ? (
+        {isLoading ? (
           <p>Loading...</p>
         ) : error ? (
           <p>Error: {error.message}</p>
@@ -131,11 +115,12 @@ function Game() {
           </tr>
         </thead>
         <tbody>
-          {data?.map((game) => (
+          {gameData && gameData?.length>0 &&gameData?.map((game) => (
             <tr key={game._id} className={styles.table_row}>
               <td className={styles.table_row}>{game.title}</td>
               <td className={styles.table_row}>{game.platform.join(" , ")}</td>
               <td><button 
+              className={styles.delete_btn}
               onClick={()=>handleDelete(game.id)}
               >Delete</button></td>
               
